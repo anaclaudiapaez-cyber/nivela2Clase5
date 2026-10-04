@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Class 2 (continued) — Reading, Writing, Listening, Speaking & Share Back</title>
+<style>
+  :root{
+    --bg-top:#ff7a1a; --bg-mid:#ff9a4d; --bg-bottom:#ffc08f;
+    --card:#ffffff; --card-soft:#fff6ee; --field:#fffdfb;
+    --primary:#ff6600; --primary-dark:#b84700; --accent:#ffa366;
+    --text:#2c1c12; --muted:#7a5a44; --border:#f3d3b8; --chip:#ffe6d1;
+    --btn:#d95500; --btn-hover:#b84700; --btn-text:#ffffff;
+    --tab-active:#3b1d0a; --tab-active-text:#ffffff;
+    --correct:#1a8a4e; --correct-bg:#e3f6ea;
+    --incorrect:#c9433d; --incorrect-bg:#fdeceb;
+    --reveal-bg:#fff1c9; --reveal:#7a5200;
+    --head-text:#2c1c12; --pill-bg:rgba(255,255,255,.8);
+    --shadow:rgba(140,60,0,.30);
+    --radius:16px; --radius-sm:10px;
+    color-scheme: light;
+    font-family: -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg-top:#3a1c08; --bg-mid:#2b1608; --bg-bottom:#1e1006;
+      --card:#33200f; --card-soft:#3d2714; --field:#2a190b;
+      --primary:#ff7a1f; --primary-dark:#ffb27a; --accent:#ff9a4d;
+      --text:#ffeede; --muted:#d9b79c; --border:#5a3a22; --chip:#4a2d16;
+      --btn:#ff7a1f; --btn-hover:#ff9a4d; --btn-text:#1e1006;
+      --tab-active:#ff7a1f; --tab-active-text:#1e1006;
+      --correct:#5fd693; --correct-bg:#173a26;
+      --incorrect:#ff8a84; --incorrect-bg:#4a1f1d;
+      --reveal-bg:#4a3a12; --reveal:#ffd875;
+      --head-text:#ffeede; --pill-bg:rgba(0,0,0,.35);
+      --shadow:rgba(0,0,0,.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg-top:#3a1c08; --bg-mid:#2b1608; --bg-bottom:#1e1006;
+    --card:#33200f; --card-soft:#3d2714; --field:#2a190b;
+    --primary:#ff7a1f; --primary-dark:#ffb27a; --accent:#ff9a4d;
+    --text:#ffeede; --muted:#d9b79c; --border:#5a3a22; --chip:#4a2d16;
+    --btn:#ff7a1f; --btn-hover:#ff9a4d; --btn-text:#1e1006;
+    --tab-active:#ff7a1f; --tab-active-text:#1e1006;
+    --correct:#5fd693; --correct-bg:#173a26;
+    --incorrect:#ff8a84; --incorrect-bg:#4a1f1d;
+    --reveal-bg:#4a3a12; --reveal:#ffd875;
+    --head-text:#ffeede; --pill-bg:rgba(0,0,0,.35);
+    --shadow:rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+  :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  html{ scroll-padding-top:env(safe-area-inset-top,0px); background:var(--bg-bottom); min-height:100%; }
+  *,*::before,*::after{ box-sizing:border-box; }
+  body{ margin:0; min-height:100vh; color:var(--text); background:linear-gradient(180deg,var(--bg-top) 0,var(--bg-mid) 420px,var(--bg-bottom) 100%); padding-bottom:70px; line-height:1.5; }
+  :focus-visible{ outline:3px solid var(--tab-active); outline-offset:2px; }
+  :root[data-theme="dark"] :focus-visible{ outline-color:#fff; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) :focus-visible{ outline-color:#fff; } }
+
+  header.top{ max-width:1000px; margin:0 auto; padding:30px 20px 10px; color:var(--head-text); }
+  .eyebrow{ display:inline-block; font-size:13px; font-weight:700; color:var(--primary-dark); background:var(--pill-bg); border:1px solid var(--border); padding:5px 14px; border-radius:999px; }
+  h1{ font-size:clamp(28px,5vw,42px); line-height:1.1; margin:14px 0 6px; font-weight:800; letter-spacing:-0.015em; }
+  .subtitle{ font-size:16px; margin:0 0 20px; max-width:640px; }
+
+  .statusbar{ display:flex; flex-wrap:wrap; gap:14px 22px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px 18px; box-shadow:0 10px 26px -14px var(--shadow); color:var(--text); }
+  .namefield{ display:flex; flex-direction:column; gap:3px; min-width:190px; flex:1 1 190px; }
+  .namefield label{ font-size:12.5px; color:var(--muted); font-weight:600; }
+  .stats{ display:flex; gap:22px; flex-wrap:wrap; }
+  .stat .n{ display:block; font-size:20px; font-weight:800; color:var(--primary-dark); }
+  .stat .l{ font-size:12.5px; color:var(--muted); }
+  .top-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-left:auto; }
+
+  nav.tabs-wrap{ max-width:1000px; margin:20px auto 0; padding:0 20px; }
+  .tabs{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tab-btn{ border:1.5px solid var(--border); background:var(--card); color:var(--primary-dark); font:inherit; font-weight:700; font-size:14px; padding:8px 15px 8px 9px; border-radius:999px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background .15s, color .15s; }
+  .tab-btn .num{ width:22px; height:22px; border-radius:50%; background:var(--chip); color:var(--primary-dark); font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .tab-btn .dotstate{ width:8px; height:8px; border-radius:50%; border:1.5px solid var(--border); }
+  .tab-btn.filled .dotstate{ background:var(--accent); border-color:var(--accent); }
+  .tab-btn.active{ background:var(--tab-active); border-color:var(--tab-active); color:var(--tab-active-text); }
+  .tab-btn.active .num{ background:rgba(255,255,255,.22); color:var(--tab-active-text); }
+  .tab-btn.active .dotstate{ border-color:var(--tab-active-text); }
+  .tab-btn.active.filled .dotstate{ background:var(--tab-active-text); }
+
+  main{ max-width:1000px; margin:22px auto 0; padding:0 20px; }
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:24px 26px; margin-bottom:18px; box-shadow:0 10px 26px -16px var(--shadow); }
+  .card > h2{ margin:0 0 4px; font-size:20px; color:var(--primary-dark); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .chip{ font-size:12px; font-weight:700; background:var(--chip); color:var(--primary-dark); padding:3px 11px; border-radius:999px; }
+  .goal{ color:var(--muted); font-size:14px; margin:0 0 16px; }
+  .instr{ font-size:14.5px; font-weight:600; margin:0 0 12px; }
+  .instr::before{ content:"Instructions: "; color:var(--primary-dark); }
+  .act-block{ margin-top:18px; padding-top:16px; border-top:1.5px dashed var(--border); }
+  .act-block:first-of-type{ margin-top:0; }
+  .act-block h3{ margin:0 0 6px; font-size:16.5px; color:var(--text); }
+
+  input[type="text"], textarea, select{ width:100%; border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; font:inherit; font-size:14.5px; color:var(--text); background:var(--field); }
+  textarea{ resize:vertical; }
+  input[type="text"]:focus, textarea:focus, select:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(255,102,0,.22); }
+  input.gap{ width:auto; display:inline-block; padding:4px 10px; margin:0 3px; text-align:center; border-radius:8px; }
+  select.inline{ width:auto; display:inline-block; padding:4px 8px; margin:0 3px; border-radius:8px; }
+  input.wide{ display:block; margin-top:8px; }
+
+  .btn{ display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--btn); background:var(--btn); color:var(--btn-text); font:inherit; font-weight:700; font-size:14px; padding:9px 18px; border-radius:999px; cursor:pointer; transition:background .15s; }
+  .btn:hover{ background:var(--btn-hover); border-color:var(--btn-hover); }
+  .btn.ghost{ background:var(--card); color:var(--primary-dark); border-color:var(--border); }
+  .btn.ghost:hover{ background:var(--chip); }
+  .btn.small{ padding:6px 13px; font-size:13px; }
+  .btn-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; }
+  .result-badge{ font-size:13.5px; font-weight:800; color:var(--primary-dark); }
+  .reveal-box{ display:none; margin-top:12px; padding:14px 16px; background:var(--reveal-bg); color:var(--reveal); border-radius:var(--radius-sm); font-size:14px; line-height:1.6; }
+  .reveal-box.open{ display:block; }
+  .reveal-box p{ margin:0 0 8px; } .reveal-box p:last-child{ margin:0; }
+
+  .items{ display:flex; flex-direction:column; gap:10px; }
+  .items.grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px 14px; }
+  .item{ border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:11px 14px; background:var(--field); }
+  .item.correct{ border-color:var(--correct); background:var(--correct-bg); }
+  .item.incorrect{ border-color:var(--incorrect); background:var(--incorrect-bg); }
+  .item.revealed{ border-color:var(--reveal); background:var(--reveal-bg); }
+  .qtext{ font-size:15px; font-weight:600; line-height:2; }
+  .qn{ width:22px; height:22px; border-radius:50%; background:var(--chip); color:var(--primary-dark); font-size:12px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; margin-right:10px; vertical-align:middle; }
+  .qtext .say{ margin-left:10px; }
+  .fb{ margin-left:8px; }
+  .fb{ font-weight:800; font-size:14px; }
+  .item.correct .fb{ color:var(--correct); } .item.incorrect .fb{ color:var(--incorrect); }
+  .opts{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; padding-left:32px; }
+  .pill{ display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--border); background:var(--card); border-radius:999px; padding:5px 14px; font-size:14px; font-weight:600; cursor:pointer; }
+  .pill:has(input:checked){ background:var(--chip); border-color:var(--primary); }
+  .pill input{ accent-color:var(--primary); }
+  .item textarea{ margin-top:8px; }
+  .say{ flex:none; border:1.5px solid var(--border); background:var(--card); color:var(--primary-dark); border-radius:999px; font-size:13px; padding:2px 10px; cursor:pointer; }
+  .say:hover{ background:var(--chip); }
+  .wordbank{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; padding:10px 12px; background:var(--card-soft); border:1.5px dashed var(--border); border-radius:var(--radius-sm); }
+  .wordbank span{ background:var(--card); border:1px solid var(--border); border-radius:999px; padding:3px 12px; font-weight:700; font-size:14px; color:var(--primary-dark); }
+
+  .tbl-wrap{ overflow-x:auto; max-width:100%; }
+  table.tbl{ width:100%; border-collapse:collapse; font-size:14.5px; min-width:480px; }
+  table.tbl th{ text-align:left; font-size:13px; color:var(--muted); padding:8px 10px; border-bottom:2px solid var(--border); }
+  table.tbl td{ padding:8px 10px; vertical-align:top; border-bottom:1px solid var(--border); }
+  table.tbl tr:last-child td{ border-bottom:none; }
+  table.tbl td.tag{ font-weight:800; color:var(--primary-dark); width:46px; }
+  .hl{ background:var(--chip); border-radius:5px; padding:0 4px; font-weight:700; }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .note{ background:var(--card-soft); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:12px 16px; font-size:14.5px; }
+  .note h4{ margin:0 0 6px; font-size:15px; color:var(--primary-dark); }
+  .note ul{ margin:0; padding-left:20px; } .note li{ margin:3px 0; }
+  .bad{ color:var(--incorrect); font-weight:700; } .good{ color:var(--correct); font-weight:700; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chips span{ background:var(--chip); color:var(--primary-dark); font-weight:700; font-size:14px; padding:5px 13px; border-radius:999px; }
+
+  .flip-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .flip{ position:relative; }
+  .flip-inner{ width:100%; min-height:150px; border:1.5px solid var(--border); background:var(--card-soft); color:var(--text); border-radius:var(--radius-sm); padding:14px 10px 10px; font:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; text-align:center; }
+  .flip .back{ display:none; flex-direction:column; gap:5px; font-size:13px; }
+  .flip.on .front{ display:none; } .flip.on .back{ display:flex; }
+  .flip.on .flip-inner{ background:var(--chip); border-color:var(--primary); }
+  .front .w{ font-size:18px; font-weight:800; color:var(--primary-dark); display:block; }
+  .front .hint{ font-size:12px; color:var(--muted); display:block; margin-top:6px; }
+  .back .past{ font-size:16px; font-weight:800; color:var(--primary-dark); }
+  .back .ex{ font-style:italic; color:var(--muted); }
+  .flip .say{ position:absolute; top:6px; right:6px; }
+
+  .reading-text{ background:var(--card-soft); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:20px 24px; font-size:16.5px; line-height:1.75; max-width:78ch; }
+  .reading-text h3{ margin:0 0 10px; font-size:19px; color:var(--primary-dark); }
+  .reading-text p{ margin:0 0 12px; } .reading-text p:last-child{ margin:0; }
+  .hl-on .pv{ background:#ffd86b; color:#2c1c12; border-radius:4px; padding:0 3px; font-weight:700; }
+
+  .player{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px 16px; background:var(--card-soft); border:1.5px solid var(--border); border-radius:var(--radius-sm); }
+  .script-box{ display:none; margin-top:12px; padding:14px 18px; background:var(--card-soft); border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:15px; line-height:1.7; max-width:78ch; }
+  .script-box.open{ display:block; }
+
+  .qcard{ text-align:center; background:var(--card-soft); border:2px solid var(--primary); border-radius:var(--radius); padding:28px 20px; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+  .qcard .qbig{ font-size:clamp(22px,4vw,30px); font-weight:800; color:var(--primary-dark); }
+  .qcard .qcount{ font-size:13px; color:var(--muted); }
+  .timer{ font-size:38px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--primary-dark); min-width:96px; }
+  .timer.done{ color:var(--incorrect); }
+  .notes-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  .field-label{ display:block; font-size:13px; color:var(--muted); font-weight:600; margin-bottom:4px; }
+  .counter{ font-size:13.5px; font-weight:700; color:var(--reveal); background:var(--reveal-bg); padding:3px 12px; border-radius:999px; }
+  .counter.ok{ color:var(--correct); background:var(--correct-bg); }
+  .checklist{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .checklist label{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; cursor:pointer; }
+  .checklist input{ margin-top:4px; accent-color:var(--primary); width:17px; height:17px; }
+
+  .pager{ max-width:1000px; margin:6px auto 0; padding:0 20px; display:flex; justify-content:space-between; gap:10px; }
+  .pager .btn.ghost{ border-color:transparent; }
+  .toast{ position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px)); transform:translateX(-50%); background:var(--tab-active); color:var(--tab-active-text); padding:10px 20px; border-radius:999px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .2s; max-width:90vw; text-align:center; z-index:50; }
+  .toast.show{ opacity:1; }
+
+  @media (max-width:760px){
+    .flip-grid{ grid-template-columns:repeat(2,1fr); }
+    .two-col, .notes-grid, .items.grid{ grid-template-columns:1fr; }
+    .card{ padding:18px 16px; }
+    .top-actions{ margin-left:0; }
+    .opts{ padding-left:0; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+  @media print{
+    body{ background:#fff !important; color:#000; padding:0; }
+    html{ background:#fff; }
+    :root{ padding:0; }
+    header.top{ color:#000; padding:0 0 10px; }
+    .top-actions, nav.tabs-wrap, .pager, .btn-row, .toast, .player .btn, .say, .reveal-toggle{ display:none !important; }
+    .panel{ display:block !important; }
+    .card{ box-shadow:none; break-inside:avoid; border:1px solid #999; }
+    .statusbar{ box-shadow:none; }
+    .reveal-box.open, .script-box.open{ display:block; }
+  }
+</style>
+<body>
+
+<header class="top">
+  <span class="eyebrow">Inglés – Nivel II (A2) · Class 2 (continued)</span>
+  <h1>What was happening?</h1>
+  <p class="subtitle">Past continuous, part 2: reading, writing, listening, speaking and a short contrast with the past simple.</p>
+  <div class="statusbar">
+    <div class="namefield">
+      <label for="studentName">Your name</label>
+      <input type="text" id="studentName" placeholder="Write your name" autocomplete="off">
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><span class="n" id="statTabs">0/7</span><span class="l">Tabs started</span></div>
+      <div class="stat"><span class="n" id="statScore">–</span><span class="l">Correct answers checked</span></div>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn small" id="dlBtn">Download my answers</button>
+      <button type="button" class="btn small ghost" id="printBtn">Print</button>
+      <button type="button" class="btn small ghost" id="resetBtn">Start again</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs-wrap" aria-label="Class sections"><div class="tabs" id="tabsNav" role="tablist"></div></nav>
+
+<main>
+
+<!-- 1. WARM UP -->
+<section class="panel" id="panel-warm" role="tabpanel" aria-label="Warm Up">
+  <div class="card">
+    <h2>Class goals <span class="chip">8 min for the warm up</span></h2>
+    <p class="goal">Module 2 · Class 2 (continued) · Practising the past continuous</p>
+    <div class="note">
+      <h4>Last class you learned the past continuous. Today you can:</h4>
+      <ul>
+        <li>read and listen to descriptions of past scenes;</li>
+        <li>write your own description using <b>was/were + -ing</b>;</li>
+        <li>talk about a moment you remember;</li>
+        <li>choose between the past simple and the past continuous.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Warm-up 1: Quick recall</h2>
+    <p class="goal">Past continuous review</p>
+    <div data-act="warm1"></div>
+  </div>
+
+  <div class="card">
+    <h2>Warm-up 2: Past simple or past continuous?</h2>
+    <p class="goal">A short contrast before we start</p>
+    <div class="note" style="margin-bottom:14px">
+      <p style="margin:0">We use the <b>past continuous</b> for an action in progress at a specific moment: <i>I was watching TV at 8 p.m.</i> We use the <b>past simple</b> for a complete action or event: <i>I watched a film last night.</i></p>
+    </div>
+    <div data-act="warm2"></div>
+  </div>
+</section>
+
+<!-- 2. READING -->
+<section class="panel" id="panel-reading" role="tabpanel" aria-label="Reading">
+  <div class="card">
+    <h2>A storm at the university <span class="chip">13 min</span></h2>
+    <p class="goal">Reading a scene description</p>
+    <p class="instr">Read the text about a storm at the university. Then do the activities.</p>
+    <div class="reading-text" id="readingText">
+      <h3>A storm at the university</h3>
+      <p>Last Tuesday at 4 p.m., a big storm started at the university. It <span class="pv">was raining</span> heavily and the wind <span class="pv">was blowing</span> very hard. Let me tell you what <span class="pv">was happening</span> inside the building.</p>
+      <p>In the main hall, a group of students <span class="pv">were waiting</span> for the storm to stop. Some of them <span class="pv">were playing</span> cards on the floor. Near the entrance, two professors <span class="pv">were watching</span> the rain through the window. They <span class="pv">were talking</span> about the traffic.</p>
+      <p>In the library, nobody was leaving. Everybody <span class="pv">was reading</span> or <span class="pv">was studying</span> quietly, and the librarian <span class="pv">was closing</span> the windows. In the cafeteria, the staff <span class="pv">were serving</span> hot tea to the students, because many of them were cold.</p>
+      <p>At 5 p.m., the storm stopped, and the sun was shining again. Everybody left happy, but a little wet.</p>
+    </div>
+    <div class="btn-row"><button type="button" class="btn ghost small" id="hlBtn" aria-pressed="false">Highlight the past continuous verbs</button></div>
+  </div>
+  <div class="card">
+    <h2>Reading activities</h2>
+    <div data-act="read1"></div>
+    <div data-act="read2"></div>
+    <div data-act="read3"></div>
+    <div data-act="read4"></div>
+  </div>
+</section>
+
+<!-- 3. GRAMMAR -->
+<section class="panel" id="panel-grammar" role="tabpanel" aria-label="Grammar">
+  <div class="card">
+    <h2>Past simple + past continuous together <span class="chip">10 min</span></h2>
+    <p class="goal">We often use both tenses together: a long action in progress (past continuous) and a short action that interrupts it (past simple).</p>
+    <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th></th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="tag">+</td><td>I <span class="hl">was doing</span> my homework <span class="hl">when</span> the lights <span class="hl">went out</span>.<br><small>long action (continuous) + when + short action (simple)</small></td></tr>
+        <tr><td class="tag">+</td><td><span class="hl">While</span> I <span class="hl">was reading</span>, my sister <span class="hl">was watching</span> TV.<br><small>while + two actions happening at the same time (both continuous)</small></td></tr>
+        <tr><td class="tag">?</td><td>What <span class="hl">were</span> you <span class="hl">doing</span> <span class="hl">when</span> the storm <span class="hl">started</span>?</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="two-col" style="margin-top:16px">
+      <div class="note">
+        <h4>When</h4>
+        <ul>
+          <li>Use <b>when + past simple</b> for the short action that interrupts.</li>
+          <li>I was walking home <b>when</b> it started to rain.</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h4>While</h4>
+        <ul>
+          <li>Use <b>while + past continuous</b> for two actions in progress at the same time.</li>
+          <li><b>While</b> I was studying, my brother was cooking.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px"><p style="margin:0">Look back at the model paragraph in the Writing tab: <i>"I was doing my homework when the lights went out."</i> That's exactly this pattern!</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Practice</h2>
+    <div data-act="gram1"></div>
+    <div data-act="gram2"></div>
+    <div data-act="gram3"></div>
+  </div>
+</section>
+
+<!-- 4. WRITING -->
+<section class="panel" id="panel-writing" role="tabpanel" aria-label="Writing">
+  <div class="card">
+    <h2>An unusual or busy moment <span class="chip">10 min</span></h2>
+    <p class="goal">Writing a scene description</p>
+    <div class="act-block">
+      <h3>Step 1: Plan your scene</h3>
+      <p class="instr">Think of an unusual or busy moment you remember (a storm, a trip delay, a busy day, a blackout). Write five people or things and what they were doing.</p>
+      <div class="items" id="timelineRows"></div>
+    </div>
+    <div class="act-block">
+      <h3>Step 2: Write your paragraph</h3>
+      <p class="instr">Write a paragraph of 60–80 words describing that moment. Use the past continuous, and the past simple if you need it for the main events.</p>
+      <div class="note" style="margin-bottom:12px">
+        <h4>Useful language</h4>
+        <ul>
+          <li>At [time], I was… · Meanwhile, … was/were …ing.</li>
+          <li>Suddenly, … · In the background, …</li>
+          <li>Nobody was … · Everybody was …</li>
+        </ul>
+      </div>
+      <textarea id="writeText" rows="9" data-key="write_text" data-label="My paragraph: An unusual or busy moment" placeholder="Last month, there was a…"></textarea>
+      <div class="btn-row" style="margin-top:8px"><span class="counter" id="wordCounter">0 words (aim for 60–80)</span></div>
+    </div>
+    <div class="act-block">
+      <h3>Step 3: Check your writing</h3>
+      <p class="instr">Tick each box when it is true.</p>
+      <ul class="checklist" id="writeChecklist"></ul>
+      <div class="btn-row"><button type="button" class="btn ghost reveal-toggle" data-target="poss-write">Show possible answer</button></div>
+      <div class="reveal-box" id="poss-write">
+        <p><b>Model paragraph:</b></p>
+        <p>Last month, there was a blackout in my neighbourhood. At 9 p.m., I was doing my homework when the lights went out. My sister was watching a series on her laptop, and she wasn't happy! Our neighbours were lighting candles, and some people were talking in the street. It was a strange but fun night.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. LISTENING -->
+<section class="panel" id="panel-listening" role="tabpanel" aria-label="Listening">
+  <div class="card">
+    <h2>Tomás: stuck at the bus terminal <span class="chip">12 min</span></h2>
+    <p class="goal">Listening to a description of a scene</p>
+    <div class="act-block">
+      <h3>Before you listen</h3>
+      <p class="instr">Look at the title "Stuck at the bus terminal". Talk to a partner: what do you think happened during the storm?</p>
+    </div>
+    <div class="act-block">
+      <h3>Audio</h3>
+      <p class="instr">Press Play. Listen to Tomás two times. Do the activities below.</p>
+      <div class="player">
+        <button type="button" class="btn small" id="audioPlay">▶ Play</button>
+        <button type="button" class="btn small ghost" id="audioSlow">▶ Play slowly</button>
+        <button type="button" class="btn small ghost" id="audioStop">■ Stop</button>
+        <button type="button" class="btn small ghost" id="scriptToggle" aria-expanded="false">Show the script</button>
+        <button type="button" class="btn small ghost" id="scriptDl">Download the script</button>
+      </div>
+      <div class="script-box" id="scriptBox"></div>
+    </div>
+    <div data-act="list1"></div>
+    <div data-act="list2"></div>
+    <div data-act="list3"></div>
+    <div class="act-block">
+      <h3>After you listen</h3>
+      <p class="instr">Compare Tomás's afternoon with the scene in the Reading text. What is similar? What is different? Talk to a partner, then write two ideas.</p>
+      <textarea rows="3" data-key="list_compare" data-label="Tomás and the storm reading: similar and different" placeholder="They both… / Tomás… but in the reading…"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SPEAKING -->
+<section class="panel" id="panel-speaking" role="tabpanel" aria-label="Speaking">
+  <div class="card">
+    <h2>Listen and draw <span class="chip">12 min</span></h2>
+    <p class="goal">Speaking in pairs: precise description</p>
+    <div class="note">
+      <h4>How it works</h4>
+      <p style="margin:0">Work in pairs: Student A and Student B. Each of you opens only your own card below — don't show it to your partner! Take turns describing your scene in your own words, using the past continuous, while your partner draws a quick sketch on paper. Then compare the drawing with the card.</p>
+    </div>
+
+    <div class="act-block">
+      <h3>Round 1: Student A describes, Student B draws</h3>
+      <details><summary style="cursor:pointer;font-weight:700;color:var(--primary-dark)">Card 1 (for Student A only — don't show your partner!)</summary>
+        <div class="note" style="margin-top:10px"><p style="margin:0">It was raining heavily. A man was standing under a big umbrella. He was reading a map. Two children were jumping in the puddles near the corner. A dog was waiting patiently next to the door of a shop. A cyclist was fixing a flat tyre under a tree.</p></div>
+      </details>
+    </div>
+
+    <div class="act-block">
+      <h3>Round 2: Student B describes, Student A draws</h3>
+      <details><summary style="cursor:pointer;font-weight:700;color:var(--primary-dark)">Card 2 (for Student B only — don't show your partner!)</summary>
+        <div class="note" style="margin-top:10px"><p style="margin:0">The wind was blowing hard. A woman was running to catch a bus. An old man was sitting on a bench, feeding the pigeons. Two students were sharing one umbrella and laughing. A cat was sleeping under a car. A shop owner was closing the shutters quickly.</p></div>
+      </details>
+    </div>
+
+    <div style="text-align:center;margin-top:16px">
+      <div class="timer" id="timer" aria-live="off">02:00</div>
+      <div class="btn-row" style="justify-content:center">
+        <button type="button" class="btn small" id="timerStart">Start</button>
+        <button type="button" class="btn small ghost" id="timerReset">Reset</button>
+      </div>
+      <p class="goal" style="margin-top:6px">Use this timer for each round (about 2 minutes to describe and draw).</p>
+    </div>
+
+    <div class="act-block">
+      <h3>Compare and reflect</h3>
+      <p class="instr">Tick each box when it is true.</p>
+      <ul class="checklist" id="speakChecklist"></ul>
+      <p class="instr" style="margin-top:14px">Write one sentence from your partner's card that you remember.</p>
+      <textarea rows="2" data-key="sp_sentence" data-label="A sentence from my partner's card" placeholder="A woman was running to catch a bus."></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- 7. SHARE BACK -->
+<section class="panel" id="panel-share" role="tabpanel" aria-label="Share Back">
+  <div class="card">
+    <h2>Share back <span class="chip">8 min</span></h2>
+    <p class="goal">Puesta en común with the whole class</p>
+    <div class="act-block">
+      <h3>Show your drawings</h3>
+      <p class="instr">A few pairs show their drawings to the class and read their card aloud. The class checks how closely the drawing matches the scene.</p>
+    </div>
+    <div data-act="share1"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="pager">
+  <button type="button" class="btn ghost" id="prevBtn">← Previous</button>
+  <button type="button" class="btn ghost" id="nextBtn">Next →</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var $ = function(s, r){ return (r||document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function norm(s){ return String(s||'').toLowerCase().replace(/[\u2018\u2019\u0060\u00B4]/g,"'").replace(/\s+/g,' ').replace(/[.!?]+$/,'').trim(); }
+function toast(msg){ var t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); },2800); }
+
+/* ---------- state ---------- */
+var STORAGE_KEY = 'a2-class2-continued-v1';
+var state = { fields:{}, results:{}, lastTab:'warm', name:'' };
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ state.fields=s.fields||{}; state.results=s.results||{}; state.lastTab=s.lastTab||'warm'; state.name=s.name||''; } }
+  }catch(e){}
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- content data ---------- */
+var TABS = [
+  {id:'warm',label:'Warm Up'},{id:'reading',label:'Reading'},{id:'grammar',label:'Grammar'},{id:'writing',label:'Writing'},
+  {id:'listening',label:'Listening'},{id:'speaking',label:'Speaking'},{id:'share',label:'Share Back'}
+];
+
+var LISTEN_SCRIPT = "Hi, I'm Tomás. Let me tell you about last Tuesday, during the storm. At 4:30 p.m., I was waiting at the bus terminal. The buses weren't arriving because of the storm. Around me, a lot of people were waiting too. Two women were sharing an umbrella near the door. An old man was reading a newspaper on a bench. A boy was playing a game on his phone, and he wasn't worried at all! The woman at the ticket office was answering a lot of questions, and she was getting tired. Finally, at 5:15 p.m., my bus arrived, and everybody was relieved.";
+
+var TF = [['T','True'],['F','False']];
+
+var ACTS = {
+  warm1:{ mode:'auto', title:'Complete with the past continuous', instr:'Write was/were + the -ing form of the verb in brackets. Quick review.',
+    items:[
+      {t:'text', q:'At 9 p.m. yesterday, I ___ (read) a book.', a:'was reading'},
+      {t:'text', q:'They ___ (not / sleep) at midnight.', a:"weren't sleeping|were not sleeping"},
+      {t:'text', q:'___ it raining this morning? (Write the auxiliary verb.)', a:'Was'},
+      {t:'text', q:'We ___ (wait) for the bus.', a:'were waiting'}
+    ]},
+  warm2:{ mode:'auto', title:'Choose the correct form', instr:'Choose the past simple or the past continuous of the verb in brackets.',
+    items:[
+      {t:'text', q:'At 8 p.m. yesterday, I ___ (watch) TV.', a:'was watching'},
+      {t:'text', q:'Yesterday, I ___ (watch) a film with my family.', a:'watched'},
+      {t:'text', q:'Last night, she ___ (study) at the library.', a:'was studying'},
+      {t:'text', q:'Last night, she ___ (study) for three hours.', a:'studied'}
+    ]},
+  gram1:{ mode:'auto', title:'Activity 1: When did it happen?', instr:'Complete with the past continuous or the past simple. One action is in progress (continuous); the other interrupts it (simple).',
+    items:[
+      {t:'text', q:'I ___ (study) when the phone ___ (ring).', a:'was studying'},
+      {t:'text', q:'I was studying when the phone ___ (ring).', a:'rang'},
+      {t:'text', q:'They ___ (walk) home when it ___ (start) to rain.', a:'were walking'},
+      {t:'text', q:'They were walking home when it ___ (start) to rain.', a:'started'},
+      {t:'text', q:'___ you sleeping when the storm began? (Write the auxiliary verb.)', a:'Were'}
+    ]},
+  gram2:{ mode:'auto', title:'Activity 2: While or when?', instr:'Choose the correct word for each sentence.',
+    items:[
+      {t:'select', q:'___ I was waiting for the bus, it started to rain.', opts:['While','When'], a:'While'},
+      {t:'select', q:'The lights went out ___ I was reading.', opts:['while','when'], a:'when'},
+      {t:'select', q:'___ the teacher arrived, the students were talking.', opts:['While','When'], a:'When'},
+      {t:'select', q:'___ we were having dinner, the phone rang twice.', opts:['While','When'], a:'While'}
+    ]},
+  gram3:{ mode:'auto', title:'Activity 3: Two things at the same time', instr:'Complete both verbs with the past continuous. Both actions were happening together.',
+    items:[
+      {t:'text', q:'While the professors ___ (watch) the rain, the students ___ (play) cards.', a:'were watching'},
+      {t:'text', q:'While the professors were watching the rain, the students ___ (play) cards.', a:'were playing'},
+      {t:'text', q:'While I ___ (read) my notes, my friend ___ (write) an email.', a:'was reading'},
+      {t:'text', q:'While I was reading my notes, my friend ___ (write) an email.', a:'was writing'}
+    ]},
+  read1:{ mode:'auto', title:'Activity 1: Who was doing what?', instr:'Read the text again. Choose the correct action for each person.',
+    items:[
+      {t:'select', q:'A group of students were ___.', opts:['waiting for the storm to stop','playing football outside'], a:'waiting for the storm to stop'},
+      {t:'select', q:'Some students were ___.', opts:['playing cards','sleeping'], a:'playing cards'},
+      {t:'select', q:'Two professors were ___.', opts:['watching the rain','printing documents'], a:'watching the rain'},
+      {t:'select', q:'The librarian was ___.', opts:['closing the windows','reading a book'], a:'closing the windows'},
+      {t:'select', q:'The cafeteria staff were ___.', opts:['serving hot tea','selling tickets'], a:'serving hot tea'}
+    ]},
+  read2:{ mode:'auto', title:'Activity 2: True or false?', instr:'Read the sentences. Choose True or False.',
+    items:[
+      {t:'radio', q:'It was a sunny afternoon.', opts:TF, a:'F'},
+      {t:'radio', q:'Students were waiting in the main hall.', opts:TF, a:'T'},
+      {t:'radio', q:'The professors were talking about an exam.', opts:TF, a:'F'},
+      {t:'radio', q:'Nobody was studying in the library.', opts:TF, a:'F'},
+      {t:'radio', q:'The storm lasted all day.', opts:TF, a:'F'},
+      {t:'radio', q:'The cafeteria staff were serving hot tea.', opts:TF, a:'T'}
+    ]},
+  read3:{ mode:'open', title:'Activity 3: Answer the questions', instr:'Answer with complete sentences.',
+    items:[
+      {t:'open', q:'What was happening in the main hall?'},
+      {t:'open', q:'What were the two professors doing?'},
+      {t:'open', q:'What was the librarian doing?'},
+      {t:'open', q:'Why was the cafeteria staff serving hot tea?'}
+    ],
+    poss:'<p>1. A group of students were waiting for the storm to stop, and some were playing cards.</p><p>2. They were watching the rain and talking about the traffic.</p><p>3. She was closing the windows.</p><p>4. Because many students were cold.</p>' },
+  read4:{ mode:'open', title:'Activity 4: Find the past continuous', instr:'Find six verbs in the past continuous in the text (was/were + -ing). Write them.',
+    items:[{t:'open', q:'Write the verbs you found.'}],
+    poss:'<p>Possible answers: was raining, was blowing, was happening, were waiting, were playing, were watching, were talking, was reading, was studying, was closing, were serving.</p>' },
+  list1:{ mode:'auto', title:'Activity 1: Listen for the main idea', instr:'Listen for the first time. Choose the best answer.',
+    items:[{t:'radio', q:'What is Tomás describing?', opts:[['a','An afternoon at the bus terminal during a storm'],['b','A football match'],['c','A birthday party']], a:'a'}] },
+  list2:{ mode:'auto', title:'Activity 2: Match the person and the action', instr:'Listen for the second time. Choose the correct action for each person.',
+    items:[
+      {t:'select', q:'Two women were ___.', opts:['sharing an umbrella','buying tickets'], a:'sharing an umbrella'},
+      {t:'select', q:'An old man was ___.', opts:['reading a newspaper','sleeping'], a:'reading a newspaper'},
+      {t:'select', q:'A boy was ___.', opts:['playing a game on his phone','crying'], a:'playing a game on his phone'},
+      {t:'select', q:'The woman at the ticket office was ___.', opts:['answering questions','closing the office'], a:'answering questions'}
+    ]},
+  list3:{ mode:'auto', title:'Activity 3: Complete the information', instr:'Listen again. Write one word in each space.',
+    items:[
+      {t:'text', q:'Tomás was waiting at the bus ___.', a:'terminal'},
+      {t:'text', q:"The buses weren't arriving because of the ___.", a:'storm'},
+      {t:'text', q:"The boy wasn't ___ at all.", a:'worried'},
+      {t:'text', q:'The woman at the ticket office was getting ___.', a:'tired'},
+      {t:'text', q:"Tomás's bus arrived at ___.", a:'5:15|5:15 p.m.'}
+    ]},
+  share1:{ mode:'self', title:'How do I feel? (traffic light)', instr:'Choose an option for each sentence. There are no wrong answers.',
+    items:[
+      {t:'self', q:'I can understand a text describing a past scene.', opts:['Yes, I can','Almost','Not yet']},
+      {t:'self', q:'I can write a short description using was/were + -ing.', opts:['Yes, I can','Almost','Not yet']},
+      {t:'self', q:'I can understand a short audio description.', opts:['Yes, I can','Almost','Not yet']},
+      {t:'self', q:'I can describe a scene to a partner.', opts:['Yes, I can','Almost','Not yet']},
+      {t:'self', q:'I can choose between the past simple and the past continuous.', opts:['Yes, I can','Almost','Not yet']}
+    ]}
+};
+
+/* ---------- render activities ---------- */
+function optsArr(o){ return (o||[]).map(function(x){ return Array.isArray(x)?x:[x,x]; }); }
+function renderItem(id, it, i){
+  var key = id+'_'+i, label = it.q, ans = (it.a===undefined?'':String(it.a));
+  var n = '<span class="qn">'+(i+1)+'</span>';
+  var say = it.say ? '<button type="button" class="say" data-say="'+esc(it.say)+'" aria-label="Listen to '+esc(it.say)+'">🔊</button>' : '';
+  var body = '';
+  if(it.t==='radio'){
+    body = '<div class="qtext">'+n+'<span>'+esc(it.q)+'</span><span class="fb"></span></div><div class="opts">'+
+      optsArr(it.opts).map(function(o){
+        return '<label class="pill"><input type="radio" name="'+key+'" value="'+esc(o[0])+'" data-key="'+key+'" data-label="'+esc(label)+'"><span>'+esc(o[1])+'</span></label>';
+      }).join('')+'</div>';
+  } else if(it.t==='select' || it.t==='self'){
+    var sel = '<select class="'+(esc(it.q).indexOf('___')>-1?'inline':'')+'" data-key="'+key+'" data-label="'+esc(label)+'" aria-label="Answer '+(i+1)+'"><option value="">Choose…</option>'+
+      optsArr(it.opts).map(function(o){ return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>'; }).join('')+'</select>';
+    var qh = esc(it.q);
+    if(qh.indexOf('___')>-1) body = '<div class="qtext">'+n+'<span>'+qh.replace('___', '</span>'+sel+'<span>')+'</span><span class="fb"></span></div>';
+    else body = '<div class="qtext">'+n+'<span>'+qh+'</span>'+say+'<span class="fb"></span></div><div style="margin-top:8px;padding-left:32px">'+sel+'</div>';
+  } else if(it.t==='text'){
+    var longest = Math.max.apply(null, ans.split('|').map(function(x){ return x.length; }));
+    var w = Math.max(6, Math.min(30, longest+3));
+    var qh2 = esc(it.q);
+    if(it.wide){
+      body = '<div class="qtext">'+n+'<span>'+qh2+'</span><span class="fb"></span></div><input type="text" class="wide" data-key="'+key+'" data-label="'+esc(label)+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Correct sentence '+(i+1)+'">';
+    } else {
+      var inp = '<input type="text" class="gap" style="width:'+w+'ch" data-key="'+key+'" data-label="'+esc(label)+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Answer '+(i+1)+'">';
+      body = '<div class="qtext">'+n+'<span>'+qh2.replace('___', '</span>'+inp+'<span>')+'</span><span class="fb"></span></div>';
+    }
+  } else if(it.t==='open'){
+    body = '<div class="qtext">'+n+'<span>'+esc(it.q)+'</span></div><textarea rows="2" data-key="'+key+'" data-label="'+esc(label)+'"></textarea>';
+  }
+  return '<div class="item" data-item="'+key+'" data-type="'+it.t+'" data-answer="'+esc(ans)+'">'+body+'</div>';
+}
+function renderAct(el){
+  var id = el.getAttribute('data-act'), A = ACTS[id]; if(!A) return;
+  var html = '<div class="act-block" id="act-'+id+'"><h3>'+esc(A.title)+'</h3><p class="instr">'+esc(A.instr)+'</p>';
+  if(A.wordbank) html += '<div class="wordbank" aria-label="Word box">'+A.wordbank.map(function(w){ return '<span>'+esc(w)+'</span>'; }).join('')+'</div>';
+  html += '<div class="items'+(A.grid?' grid':'')+'">'+A.items.map(function(it,i){ return renderItem(id,it,i); }).join('')+'</div>';
+  if(A.mode==='auto'){
+    html += '<div class="btn-row"><button type="button" class="btn" data-check="'+id+'">Check answers</button>'+
+      '<button type="button" class="btn ghost" data-show="'+id+'">Show correct answers</button>'+
+      '<button type="button" class="btn ghost" data-clear="'+id+'">Clear</button>'+
+      '<span class="result-badge" id="res-'+id+'" aria-live="polite"></span></div>';
+  } else if(A.mode==='open'){
+    html += '<div class="btn-row"><button type="button" class="btn ghost reveal-toggle" data-target="poss-'+id+'">Show possible answers</button></div>'+
+      '<div class="reveal-box" id="poss-'+id+'">'+A.poss+'</div>';
+  }
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+/* ---------- other static renders ---------- */
+function renderWriting(){
+  var rows = '';
+  for(var i=0;i<5;i++){
+    rows += '<div class="item"><div class="notes-grid" style="grid-template-columns:120px 1fr">'+
+      '<div><label class="field-label" for="tl_y'+i+'">Who / what?</label><input type="text" id="tl_y'+i+'" data-key="tl_year_'+i+'" data-label="Scene '+(i+1)+': who or what" placeholder="My sister"></div>'+
+      '<div><label class="field-label" for="tl_e'+i+'">What were they doing?</label><input type="text" id="tl_e'+i+'" data-key="tl_event_'+i+'" data-label="Scene '+(i+1)+': action" placeholder="was watching a series"></div></div></div>';
+  }
+  $('#timelineRows').innerHTML = rows;
+  var chk = ['I used at least five verbs in the past continuous.','I wrote one negative sentence (wasn\'t/weren\'t + verb-ing).','I used at least two time expressions (at that moment, suddenly, meanwhile…).','I spelled the -ing forms correctly.','I described more than one person or thing in the scene.'];
+  $('#writeChecklist').innerHTML = chk.map(function(c,i){
+    return '<li><label><input type="checkbox" data-key="wr_chk_'+i+'" data-label="Checklist: '+esc(c)+'"><span>'+esc(c)+'</span></label></li>';
+  }).join('');
+  var sc = ['I used was/were + -ing to describe the scene.','I described at least four actions.','My partner\'s drawing matched my description quite well.'];
+  $('#speakChecklist').innerHTML = sc.map(function(c,i){
+    return '<li><label><input type="checkbox" data-key="sp_chk_'+i+'" data-label="Compare and reflect: '+esc(c)+'"><span>'+esc(c)+'</span></label></li>';
+  }).join('');
+  $('#scriptBox').textContent = LISTEN_SCRIPT;
+}
+
+/* ---------- field persistence ---------- */
+function restoreFields(){
+  $$('[data-key]').forEach(function(el){
+    var k = el.getAttribute('data-key'), v = state.fields[k];
+    if(el.type==='radio'){ el.checked = (v===el.value); }
+    else if(el.type==='checkbox'){ el.checked = (v==='1'); }
+    else if(v!==undefined){ el.value = v; }
+  });
+  $('#studentName').value = state.name||'';
+}
+function onField(e){
+  var el = e.target;
+  if(el.id==='studentName'){ state.name = el.value; saveState(); return; }
+  if(!el.getAttribute || !el.getAttribute('data-key')) return;
+  var k = el.getAttribute('data-key');
+  if(el.type==='radio'){ if(el.checked) state.fields[k] = el.value; }
+  else if(el.type==='checkbox'){ state.fields[k] = el.checked ? '1' : ''; }
+  else { state.fields[k] = el.value; }
+  var item = el.closest('.item');
+  if(item){ item.classList.remove('correct','incorrect','revealed'); var fb=$('.fb',item); if(fb) fb.textContent=''; }
+  if(el.id==='writeText') updateCounter();
+  saveState(); updateHeader();
+}
+document.addEventListener('input', onField);
+document.addEventListener('change', onField);
+
+/* ---------- checking ---------- */
+function itemValue(item){
+  if(item.getAttribute('data-type')==='radio'){ var c=$('input[type=radio]:checked',item); return c?c.value:''; }
+  var el = $('[data-key]',item); return el?el.value:'';
+}
+function itemCorrect(item){
+  var val = itemValue(item), acc = item.getAttribute('data-answer').split('|');
+  if(item.getAttribute('data-type')==='text'){ return acc.some(function(a){ return norm(a)===norm(val); }); }
+  return acc.indexOf(val)>-1;
+}
+function actItems(id){ return $$('#act-'+id+' .item[data-answer]'); }
+function checkAct(id){
+  var items = actItems(id), c=0, t=items.length;
+  items.forEach(function(item){
+    item.classList.remove('correct','incorrect','revealed');
+    var fb=$('.fb',item), val=itemValue(item);
+    if(val===''){ if(fb) fb.textContent=''; return; }
+    if(itemCorrect(item)){ item.classList.add('correct'); c++; if(fb) fb.textContent='✔'; }
+    else { item.classList.add('incorrect'); if(fb) fb.textContent='✘'; }
+  });
+  state.results[id] = {c:c,t:t}; saveState();
+  $('#res-'+id).textContent = c+' / '+t+' correct';
+  updateHeader();
+}
+function showAct(id){
+  actItems(id).forEach(function(item){
+    var first = item.getAttribute('data-answer').split('|')[0];
+    if(item.getAttribute('data-type')==='radio'){
+      $$('input[type=radio]',item).forEach(function(r){ r.checked = (r.value===first); if(r.checked) state.fields[r.getAttribute('data-key')]=r.value; });
+    } else {
+      var el=$('[data-key]',item);
+      el.value = first;
+      state.fields[el.getAttribute('data-key')] = el.value;
+    }
+    item.classList.remove('correct','incorrect'); item.classList.add('revealed');
+    var fb=$('.fb',item); if(fb) fb.textContent='';
+  });
+  delete state.results[id]; saveState();
+  $('#res-'+id).textContent = 'Correct answers shown';
+  updateHeader();
+}
+function clearAct(id){
+  actItems(id).forEach(function(item){
+    item.classList.remove('correct','incorrect','revealed');
+    var fb=$('.fb',item); if(fb) fb.textContent='';
+    $$('[data-key]',item).forEach(function(el){
+      if(el.type==='radio') el.checked=false; else el.value='';
+      delete state.fields[el.getAttribute('data-key')];
+    });
+  });
+  delete state.results[id]; saveState();
+  $('#res-'+id).textContent='';
+  updateHeader();
+}
+
+/* ---------- header / tabs ---------- */
+function updateHeader(){
+  var started = 0;
+  TABS.forEach(function(t){
+    var panel = $('#panel-'+t.id);
+    var filled = $$('[data-key]',panel).some(function(el){ return !!state.fields[el.getAttribute('data-key')]; });
+    var b = $('.tab-btn[data-tab="'+t.id+'"]'); b.classList.toggle('filled', filled);
+    if(filled) started++;
+  });
+  $('#statTabs').textContent = started+'/'+TABS.length;
+  var c=0,t=0; Object.keys(state.results).forEach(function(k){ c+=state.results[k].c; t+=state.results[k].t; });
+  $('#statScore').textContent = t ? (c+' / '+t) : '–';
+}
+function renderTabs(){
+  $('#tabsNav').innerHTML = TABS.map(function(t,i){
+    return '<button type="button" class="tab-btn" role="tab" data-tab="'+t.id+'" aria-selected="false"><span class="num">'+(i+1)+'</span>'+esc(t.label)+'<span class="dotstate"></span></button>';
+  }).join('');
+}
+function showTab(id, noScroll){
+  TABS.forEach(function(t){
+    $('#panel-'+t.id).classList.toggle('active', t.id===id);
+    var b=$('.tab-btn[data-tab="'+t.id+'"]'); b.classList.toggle('active', t.id===id); b.setAttribute('aria-selected', t.id===id?'true':'false');
+  });
+  var idx = TABS.map(function(t){ return t.id; }).indexOf(id);
+  $('#prevBtn').disabled = idx<=0; $('#nextBtn').disabled = idx>=TABS.length-1;
+  $('#prevBtn').style.visibility = idx<=0?'hidden':'visible'; $('#nextBtn').style.visibility = idx>=TABS.length-1?'hidden':'visible';
+  state.lastTab = id; saveState();
+  if(!noScroll) window.scrollTo({top:0, behavior:'smooth'});
+}
+function tabIndex(){ return TABS.map(function(t){ return t.id; }).indexOf(state.lastTab); }
+
+/* ---------- speech (browser voice) ---------- */
+var TTS = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+var voices = [];
+if(TTS){ try{ voices = TTS.getVoices(); TTS.onvoiceschanged = function(){ voices = TTS.getVoices(); }; }catch(e){} }
+function pickVoice(){
+  var v = voices.filter(function(x){ return /^en[-_](US|GB)/i.test(x.lang); })[0] || voices.filter(function(x){ return /^en/i.test(x.lang); })[0];
+  return v || null;
+}
+function speak(text, rate){
+  if(!TTS){ toast('Audio is not available here. Ask your teacher to read the script aloud.'); return; }
+  try{
+    TTS.cancel();
+    var parts = text.match(/[^.!?]+[.!?]*/g) || [text];
+    parts.forEach(function(p){
+      if(!p.trim()) return;
+      var u = new SpeechSynthesisUtterance(p.trim()); u.lang='en-US'; u.rate = rate||0.95;
+      var v = pickVoice(); if(v) u.voice = v;
+      TTS.speak(u);
+    });
+  }catch(e){ toast('Audio is not available here.'); }
+}
+
+/* ---------- saving files ---------- */
+async function saveFile(filename, data){
+  var d = null;
+  try{ if(window.claude && typeof window.claude.use==='function') d = await window.claude.use('downloads'); }catch(e){ d=null; }
+  if(d){
+    try{ await d.save({filename:filename, data:data}); toast('File ready: '+filename); }
+    catch(err){ if(err && err.code==='declined') return; toast('The file could not be saved here.'); }
+    return;
+  }
+  try{
+    var blob = new Blob([data], {type: /\.html$/.test(filename)?'text/html':'text/plain'});
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href=url; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+  }catch(e){ toast('The file could not be saved here.'); }
+}
+function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function buildReport(){
+  var name = (state.name||'').trim() || '(no name)';
+  var h = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>My answers — Class 2 (continued)</title>'+
+    '<style>body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:#fff3ea;color:#2c1c12;padding:24px;max-width:740px;margin:0 auto;line-height:1.5}'+
+    'h1{color:#b84700;margin-bottom:4px}h2{color:#d95500;font-size:17px;border-bottom:2px solid #ffd9b3;padding-bottom:4px;margin-top:28px}'+
+    '.item{margin:8px 0;padding:8px 12px;background:#fff;border:1px solid #ffd9b3;border-radius:8px}.item b{display:block;font-size:12.5px;color:#7a5a44;margin-bottom:3px}'+
+    '.na{color:#999}</style></head><body><h1>My answers — Class 2 (continued): What was happening?</h1><p>Name: <b>'+esc(name)+'</b> · Date: '+new Date().toLocaleDateString('en-GB')+'</p>';
+  TABS.forEach(function(t){
+    var panel = $('#panel-'+t.id), seen = {}, rows = [];
+    $$('[data-key]',panel).forEach(function(el){
+      var k = el.getAttribute('data-key'), val = '';
+      if(el.type==='radio'){ if(seen[k]) return; seen[k]=1; var c=$('input[name="'+k+'"]:checked',panel); val = c ? c.parentElement.textContent.trim() : ''; }
+      else if(el.type==='checkbox'){ val = el.checked ? '✔ Yes' : ''; }
+      else if(el.tagName==='SELECT'){ val = el.value ? el.options[el.selectedIndex].textContent : ''; }
+      else { val = (el.value||'').trim(); }
+      rows.push({label: el.getAttribute('data-label')||k, val: val});
+    });
+    if(rows.length){
+      h += '<h2>'+esc(TABS.filter(function(x){return x.id===t.id;})[0].label)+'</h2>';
+      rows.forEach(function(r){ h += '<div class="item"><b>'+esc(r.label)+'</b>'+(r.val?esc(r.val).replace(/\n/g,'<br>'):'<span class="na">(not answered)</span>')+'</div>'; });
+    }
+  });
+  return h+'</body></html>';
+}
+
+/* ---------- counters / timer ---------- */
+function updateCounter(){
+  var v = ($('#writeText').value||'').trim(), n = v ? v.split(/\s+/).length : 0, el = $('#wordCounter');
+  el.textContent = n+' words (aim for 60–80)'; el.classList.toggle('ok', n>=60 && n<=80);
+}
+var TIMER_DEFAULT = 120;
+var tInt = null, tLeft = TIMER_DEFAULT;
+function drawTimer(){ var m=Math.floor(tLeft/60), s=tLeft%60; var el=$('#timer'); el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s; el.classList.toggle('done', tLeft===0); }
+function startTimer(){
+  if(tInt) return; if(tLeft===0) tLeft=TIMER_DEFAULT; drawTimer();
+  tInt = setInterval(function(){ tLeft--; drawTimer(); if(tLeft<=0){ clearInterval(tInt); tInt=null; toast('Time is up!'); } },1000);
+}
+function resetTimer(){ clearInterval(tInt); tInt=null; tLeft=TIMER_DEFAULT; drawTimer(); }
+
+/* ---------- events ---------- */
+document.addEventListener('click', function(e){
+  var t = e.target;
+  var say = t.closest('.say'); if(say){ speak(say.getAttribute('data-say'), 0.85); return; }
+  var tab = t.closest('.tab-btn'); if(tab){ showTab(tab.getAttribute('data-tab')); return; }
+  var rev = t.closest('.reveal-toggle'); if(rev){
+    var box = document.getElementById(rev.getAttribute('data-target')); var open = box.classList.toggle('open');
+    rev.textContent = open ? 'Hide possible answer' : 'Show possible answer'; return;
+  }
+  var chk = t.closest('[data-check]'); if(chk){ checkAct(chk.getAttribute('data-check')); return; }
+  var shw = t.closest('[data-show]'); if(shw){ showAct(shw.getAttribute('data-show')); return; }
+  var clr = t.closest('[data-clear]'); if(clr){ clearAct(clr.getAttribute('data-clear')); return; }
+});
+$('#prevBtn').addEventListener('click', function(){ var i=tabIndex(); if(i>0) showTab(TABS[i-1].id); });
+$('#nextBtn').addEventListener('click', function(){ var i=tabIndex(); if(i<TABS.length-1) showTab(TABS[i+1].id); });
+$('#hlBtn').addEventListener('click', function(){
+  var on = $('#readingText').classList.toggle('hl-on'); this.setAttribute('aria-pressed', on?'true':'false');
+  this.textContent = on ? 'Hide the highlighting' : 'Highlight the past continuous verbs';
+});
+$('#audioPlay').addEventListener('click', function(){ speak(LISTEN_SCRIPT, 0.95); });
+$('#audioSlow').addEventListener('click', function(){ speak(LISTEN_SCRIPT, 0.75); });
+$('#audioStop').addEventListener('click', function(){ if(TTS){ try{ TTS.cancel(); }catch(e){} } });
+$('#scriptToggle').addEventListener('click', function(){
+  var open = $('#scriptBox').classList.toggle('open'); this.setAttribute('aria-expanded', open?'true':'false');
+  this.textContent = open ? 'Hide the script' : 'Show the script';
+});
+$('#scriptDl').addEventListener('click', function(){ saveFile('tomas-listening-script.txt', 'Tomás: stuck at the bus terminal\n\n'+LISTEN_SCRIPT+'\n'); });
+$('#timerStart').addEventListener('click', startTimer);
+$('#timerReset').addEventListener('click', resetTimer);
+$('#dlBtn').addEventListener('click', function(){
+  var n = slug(state.name); saveFile('class2-continued-a2-answers'+(n?'-'+n:'')+'.html', buildReport());
+});
+$('#printBtn').addEventListener('click', function(){ try{ window.print(); }catch(e){ toast('Printing is not available here. Use "Download my answers".'); } });
+var resetArmed = null;
+$('#resetBtn').addEventListener('click', function(){
+  var b = this;
+  if(!resetArmed){
+    b.textContent = 'Click again to erase everything'; resetArmed = setTimeout(function(){ b.textContent='Start again'; resetArmed=null; },4000); return;
+  }
+  clearTimeout(resetArmed); resetArmed=null;
+  state = { fields:{}, results:{}, lastTab:'warm', name:'' };
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  location.reload();
+});
+
+/* ---------- init ---------- */
+loadState();
+$$('[data-act]').forEach(renderAct);
+renderWriting();
+renderTabs();
+restoreFields();
+updateCounter();
+drawTimer();
+updateHeader();
+var known = TABS.some(function(t){ return t.id===state.lastTab; });
+showTab(known ? state.lastTab : 'warm', true);
+
+})();
+</script>
+</body>
+</html>
